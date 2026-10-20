@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#174d3b">
+  <title>Campus Resource Exchange and Waste Reduction System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18241f;
+      --muted: #6f7d75;
+      --line: #e4eae5;
+      --paper: #f7f8f4;
+      --white: #fff;
+      --green: #174d3b;
+      --green-2: #28694f;
+      --mint: #dcefe2;
+      --lime: #d5f369;
+      --coral: #ee795e;
+      --shadow: 0 12px 32px rgba(22, 57, 42, .08);
+      font-family: "DM Sans", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; color: var(--ink); background: var(--paper); min-width: 320px; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .auth-page { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(390px, .85fr); background: var(--paper); }
+    .auth-story { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; gap: 42px; padding: clamp(34px, 6vw, 86px); color: #f4f8f2; background-color: var(--green); background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 38px 38px; }
+    .auth-brand { display: inline-flex; align-items: center; gap: 11px; color: white; font: 800 17px Manrope, sans-serif; }
+    .auth-brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: var(--green); background: var(--lime); }
+    .auth-brand-mark svg { width: 22px; height: 22px; }
+    .auth-story-copy { max-width: 560px; padding: 56px 0; }
+    .auth-story .eyebrow { color: var(--lime); }
+    .auth-story h1 { max-width: 520px; margin-bottom: 16px; font: 800 42px/1.12 Manrope, sans-serif; letter-spacing: -.6px; }
+    .auth-story-copy > p:not(.eyebrow) { max-width: 440px; margin-bottom: 25px; color: rgba(255,255,255,.75); font-size: 14px; line-height: 1.7; }
+    .auth-modes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .auth-mode { padding: 8px 11px; border: 1px solid rgba(255,255,255,.25); border-radius: 99px; color: #f1f7ed; font-size: 11px; font-weight: 600; }
+    .auth-story-foot { color: rgba(255,255,255,.6); font-size: 11px; }
+    .auth-panel { display: grid; place-items: center; padding: 34px; }
+    .auth-card { width: min(100%, 430px); padding: 29px; border: 1px solid var(--line); border-radius: 10px; background: white; box-shadow: var(--shadow); }
+    .auth-card h2 { margin: 0 0 6px; font: 800 23px Manrope, sans-serif; letter-spacing: -.3px; }
+    .auth-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 20px; border-radius: 8px; background: #f0f3ef; }
+    .auth-tab { min-height: 36px; border: 0; border-radius: 6px; color: #6c7971; background: transparent; font-size: 12px; font-weight: 700; }
+    .auth-tab[aria-selected="true"] { color: var(--green); background: white; box-shadow: 0 1px 3px rgba(21,50,35,.1); }
+    .auth-form { display: grid; gap: 13px; }
+    .auth-form .form-field { gap: 6px; }
+    .auth-form label { color: #4e5b53; font-size: 11px; font-weight: 700; }
+    .auth-form .form-control { min-height: 43px; }
+    .auth-form .button { width: 100%; margin-top: 2px; }
+    .auth-notice { margin: 17px 0 0; padding: 11px 12px; border-left: 3px solid #b9ce7a; color: #59684d; background: #f4f7e9; font-size: 10px; line-height: 1.55; }
+    #auth-feedback { margin: 10px 0 0; color: var(--green); font-size: 11px; line-height: 1.5; }
+    #auth-feedback[data-error="true"] { color: #a23527; }
+    .auth-guest { display: block; margin: 15px auto 0; padding: 6px; border: 0; color: var(--green-2); background: transparent; font-size: 11px; font-weight: 700; }
+    .auth-guest:hover { text-decoration: underline; }
+    .auth-demo-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .auth-demo-roles .button { min-height: 38px; padding: 0 8px; font-size: 11px; }
+    .auth-role-note { margin: 8px 0 0; color: #7b867e; font-size: 10px; line-height: 1.5; text-align: center; }
+    .auth-divider { display: flex; align-items: center; gap: 10px; margin-top: 14px; color: #8a958d; font-size: 10px; }
+    .auth-divider::before, .auth-divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+    .auth-hidden { display: none; }
+    .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 max(28px, calc((100vw - 1320px) / 2)); background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--green); text-decoration: none; font: 800 23px Manrope, sans-serif; letter-spacing: -.8px; }
+    .brand-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--lime); color: var(--green); }
+    .brand-mark svg { width: 19px; height: 19px; }
+    .nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { border: 0; color: #68756e; background: transparent; padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+    .nav-link:hover, .nav-link.active { color: var(--green); background: #eff5ef; }
+    .profile { display: flex; align-items: center; gap: 10px; color: #435149; font-size: 13px; font-weight: 600; }
+    .profile-role { color: var(--muted); font-size: 10px; font-weight: 600; }
+    .avatar { width: 34px; height: 34px; display: grid; place-items: center; background: #e5e9c5; border-radius: 50%; color: var(--green); font-weight: 700; }
+    .shell { max-width: 1320px; margin: 0 auto; padding: 34px 28px 64px; }
+    .welcome { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; }
+    .eyebrow { margin: 0 0 8px; color: var(--green-2); font-size: 11px; line-height: 1.2; font-weight: 700; letter-spacing: 1.35px; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 7px; font: 800 32px/1.18 Manrope, sans-serif; letter-spacing: -.8px; }
+    .welcome-copy { margin: 0; color: var(--muted); font-size: 14px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border: 1px solid transparent; border-radius: 8px; padding: 0 16px; font-size: 13px; font-weight: 700; transition: background .18s ease, transform .18s ease; }
+    .button:hover { transform: translateY(-1px); }
+    .button-primary { background: var(--green); color: #fff; }
+    .button-primary:hover { background: #103d2e; }
+    .button-primary svg, .button-secondary svg { width: 17px; height: 17px; }
+    .button-secondary { background: #fff; border-color: var(--line); color: var(--green); }
+    .button-secondary:hover { background: #f2f7f2; }
+    .overview { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; margin-bottom: 30px; }
+    .hero-panel { min-height: 230px; position: relative; overflow: hidden; padding: 29px 32px; color: white; background: var(--green); border-radius: 10px; }
+    .hero-panel::before { content: ""; position: absolute; right: -43px; top: -122px; width: 340px; height: 340px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; box-shadow: 0 0 0 31px rgba(255,255,255,.035), 0 0 0 67px rgba(255,255,255,.035); }
+    .hero-panel::after { content: ""; position: absolute; width: 112px; height: 112px; right: 108px; bottom: -60px; transform: rotate(24deg); border-radius: 25px; background: var(--lime); opacity: .92; }
+    .hero-content { position: relative; z-index: 1; max-width: 480px; }
+    .hero-panel .eyebrow { color: var(--lime); }
+    .hero-panel h2 { max-width: 450px; margin-bottom: 10px; font: 800 28px/1.2 Manrope, sans-serif; letter-spacing: -.6px; }
+    .hero-panel p:not(.eyebrow) { max-width: 405px; margin-bottom: 20px; color: rgba(255,255,255,.76); font-size: 13px; line-height: 1.55; }
+    .hero-panel .button { background: var(--lime); color: var(--green); }
+    .hero-panel .button:hover { background: #e2ff88; }
+    .impact-panel { display: flex; flex-direction: column; justify-content: space-between; padding: 23px; border: 1px solid #dfe8dc; border-radius: 10px; background: #ecf4e8; }
+    .impact-heading { display: flex; justify-content: space-between; align-items: center; color: var(--green); }
+    .impact-heading h2 { margin: 0; font: 700 14px Manrope, sans-serif; }
+    .impact-heading svg { width: 20px; height: 20px; }
+    .impact-number { margin: 16px 0 1px; color: var(--green); font: 800 40px/1 Manrope, sans-serif; letter-spacing: -1.3px; }
+    .impact-label { margin: 0; color: #536b5a; font-size: 12px; }
+    .impact-foot { display: flex; align-items: center; gap: 8px; padding-top: 14px; border-top: 1px solid #d4e2d1; color: #526755; font-size: 11px; }
+    .impact-foot strong { color: var(--green); }
+    .impact-dot { width: 8px; height: 8px; border-radius: 50%; background: #6ba66c; }
+    .market-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 30px; align-items: start; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .section-head h2 { margin: 0 0 4px; font: 800 21px Manrope, sans-serif; letter-spacing: -.4px; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .search-row { display: flex; gap: 10px; margin-bottom: 13px; }
+    .search-wrap { position: relative; flex: 1; }
+    .search-wrap svg { position: absolute; top: 50%; left: 13px; width: 17px; height: 17px; transform: translateY(-50%); color: #849087; pointer-events: none; }
+    .search-input { width: 100%; height: 43px; padding: 0 14px 0 40px; color: var(--ink); border: 1px solid #dce4dd; border-radius: 8px; background: white; outline: none; font-size: 13px; }
+    .search-input:focus, .form-control:focus { border-color: #5e9372; box-shadow: 0 0 0 3px rgba(61, 131, 83, .12); }
+    .sort-select { height: 43px; min-width: 135px; padding: 0 30px 0 12px; border: 1px solid #dce4dd; border-radius: 8px; color: #435149; background: white; font-size: 12px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 19px; }
+    .filter-chip { min-height: 31px; padding: 0 12px; border: 1px solid #e1e7e1; border-radius: 99px; color: #647168; background: transparent; font-size: 11px; font-weight: 600; }
+    .filter-chip:hover { border-color: #aabcae; color: var(--green); }
+    .filter-chip.active { border-color: var(--green); color: white; background: var(--green); }
+    .result-line { display: flex; justify-content: space-between; align-items: center; margin: 0 0 12px; color: #78847c; font-size: 11px; }
+    .listing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .listing-card { min-width: 0; overflow: hidden; background: white; border: 1px solid #e6ebe6; border-radius: 9px; transition: transform .2s ease, box-shadow .2s ease; }
+    .listing-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .photo-wrap { height: 148px; position: relative; overflow: hidden; background: #e8eee7; }
+    .photo-wrap img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .4s ease; }
+    .listing-card:hover .photo-wrap img { transform: scale(1.04); }
+    .type-badge { position: absolute; left: 10px; top: 10px; padding: 5px 8px; border-radius: 5px; color: #174d3b; background: rgba(255,255,255,.94); font-size: 9px; font-weight: 700; letter-spacing: .45px; text-transform: uppercase; }
+    .card-body { padding: 12px 13px 13px; }
+    .card-category { margin-bottom: 5px; color: #718078; font-size: 9px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
+    .card-title-row { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+    .card-title { margin: 0; color: #1d2a23; font: 700 14px/1.35 Manrope, sans-serif; }
+    .card-price { flex-shrink: 0; color: var(--green); font-size: 12px; font-weight: 700; }
+    .card-condition { margin: 8px 0 12px; color: #758178; font-size: 10px; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid #edf0ec; }
+    .seller { display: flex; min-width: 0; align-items: center; gap: 7px; color: #68756e; font-size: 10px; }
+    .seller-avatar { width: 23px; height: 23px; flex: 0 0 23px; display: grid; place-items: center; border-radius: 50%; color: #28694f; background: #e5efe3; font-size: 9px; font-weight: 700; }
+    .card-link { padding: 5px 0 5px 7px; border: 0; color: var(--green); background: none; font-size: 10px; font-weight: 700; }
+    .card-link:hover { text-decoration: underline; }
+    .side-column { padding-top: 3px; }
+    .side-block { padding: 0 0 18px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .side-block:last-child { border-bottom: 0; }
+    .side-block h3 { margin-bottom: 12px; font: 700 13px Manrope, sans-serif; }
+    .category-list { display: grid; gap: 4px; }
+    .category-button { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 8px 9px; border: 0; border-radius: 6px; color: #5e6b63; background: transparent; text-align: left; font-size: 11px; }
+    .category-button:hover, .category-button.active { color: var(--green); background: #eaf2e9; }
+    .category-count { color: #87938b; font-size: 10px; }
+    .campus-note { padding: 15px; border-radius: 8px; background: #fff1e8; }
+    .campus-note h3 { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: #743e2c; font: 700 12px Manrope, sans-serif; }
+    .campus-note h3 svg { width: 15px; height: 15px; }
+    .campus-note p { margin: 0; color: #7e6156; font-size: 10px; line-height: 1.55; }
+    .empty-state { grid-column: 1/-1; padding: 45px 20px; text-align: center; border: 1px dashed #cdd8cf; border-radius: 9px; color: var(--muted); }
+    .empty-state strong { display: block; margin-bottom: 5px; color: var(--ink); font: 700 15px Manrope, sans-serif; }
+    .empty-state p { margin: 0; font-size: 12px; }
+    .view { display: none; animation: enter .28s ease both; }
+    .view.active { display: block; }
+    @keyframes enter { from { opacity: .3; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .page-section { min-height: 350px; padding: 26px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+    .my-listings-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .impact-page { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .impact-stat { padding: 22px; border-radius: 8px; background: #edf4e9; }
+    .impact-stat:nth-child(2) { background: #fff0e8; }
+    .impact-stat h3 { margin-bottom: 20px; color: #63746a; font: 600 12px Manrope, sans-serif; }
+    .impact-stat strong { display: block; margin-bottom: 5px; color: var(--green); font: 800 36px Manrope, sans-serif; }
+    .impact-stat p { margin: 0; color: #68786e; font-size: 11px; }
+    .impact-explainer { grid-column: 1/-1; padding: 23px 0 0; }
+    .impact-explainer h3 { margin-bottom: 8px; font: 700 15px Manrope, sans-serif; }
+    .impact-explainer p { max-width: 640px; margin-bottom: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .operations-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .operations-header h3 { margin: 0 0 4px; font: 700 15px Manrope, sans-serif; }
+    .operations-header p { margin: 0; color: var(--muted); font-size: 11px; }
+    .operations-list { display: grid; gap: 10px; }
+    .operations-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .operations-row:last-child { border-bottom: 0; }
+    .operations-row h4 { margin: 0 0 4px; font: 700 13px Manrope, sans-serif; }
+    .operations-row p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .operations-actions { display: flex; align-items: center; gap: 8px; }
+    .role-label { min-width: 80px; color: var(--green); font-size: 11px; font-weight: 700; }
+    .status-label { min-width: 58px; color: #68756e; font-size: 10px; }
+    .pending-note { padding: 10px 12px; margin-bottom: 12px; border-left: 3px solid #e6bb65; color: #735c2b; background: #fbf6e9; font-size: 10px; line-height: 1.5; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(12, 31, 23, .5); }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(100%, 540px); max-height: min(90vh, 760px); overflow: auto; border-radius: 10px; background: white; box-shadow: 0 24px 80px rgba(0,0,0,.2); animation: enter .18s ease both; }
+    .modal-head { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 18px 21px; border-bottom: 1px solid var(--line); background: white; }
+    .modal-head h2 { margin: 0; font: 800 18px Manrope, sans-serif; }
+    .icon-button { width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 7px; color: #54635a; background: #f1f4f0; }
+    .icon-button:hover { color: var(--green); background: #e7eee6; }
+    .icon-button svg { width: 17px; height: 17px; }
+    .modal-content { padding: 20px 21px 22px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: grid; gap: 6px; }
+    .form-field.full { grid-column: 1/-1; }
+    .form-field label { color: #4e5b53; font-size: 11px; font-weight: 700; }
+    .form-control { width: 100%; min-height: 40px; padding: 9px 11px; border: 1px solid #dce4dd; border-radius: 7px; outline: none; color: var(--ink); background: white; font-size: 12px; }
+    textarea.form-control { min-height: 76px; resize: vertical; }
+    .form-help { margin: -2px 0 0; color: #879188; font-size: 10px; }
+    .modal-actions { display: flex; justify-content: end; gap: 8px; margin-top: 19px; }
+    .detail-image { width: 100%; height: 220px; display: block; margin-bottom: 16px; object-fit: cover; border-radius: 7px; background: #e7ece6; }
+    .detail-meta { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+    .detail-title { margin: 0 0 6px; font: 800 21px Manrope, sans-serif; }
+    .detail-description { margin: 13px 0; color: #59675f; font-size: 13px; line-height: 1.65; }
+    .detail-info { padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: #647168; font-size: 11px; line-height: 1.8; }
+    .detail-info strong { color: #35443b; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 20; max-width: calc(100vw - 44px); padding: 12px 16px; color: white; background: var(--green); border-radius: 8px; box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 42px; padding-top: 17px; border-top: 1px solid var(--line); color: #839087; font-size: 10px; }
+    @media (max-width: 960px) {
+      .overview { grid-template-columns: minmax(0, 1fr) 250px; }
+      .market-layout { grid-template-columns: minmax(0, 1fr) 210px; gap: 20px; }
+      .listing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .photo-wrap { height: 160px; }
+    }
+    @media (max-width: 700px) {
+      .auth-page { grid-template-columns: 1fr; }
+      .auth-story { min-height: 320px; gap: 24px; padding: 24px; }
+      .auth-story-copy { padding: 15px 0 0; }
+      .auth-story h1 { font-size: 31px; }
+      .auth-story-copy > p:not(.eyebrow) { margin-bottom: 15px; font-size: 12px; }
+      .auth-story-foot { display: none; }
+      .auth-panel { padding: 24px 16px 38px; }
+      .auth-card { padding: 23px; }
+      .operations-row { align-items: start; flex-direction: column; gap: 10px; }
+      .operations-actions { flex-wrap: wrap; }
+      .topbar { height: 62px; padding: 0 16px; }
+      .brand { font-size: 20px; }
+      .nav { gap: 1px; }
+      .nav-link { padding: 8px 9px; font-size: 11px; }
+      .profile-name { display: none; }
+      .shell { padding: 25px 16px 42px; }
+      .welcome { align-items: start; }
+      .welcome h1 { font-size: 26px; }
+      .welcome .button { min-height: 38px; padding: 0 10px; font-size: 11px; }
+      .overview { grid-template-columns: 1fr; gap: 11px; }
+      .hero-panel { min-height: 215px; padding: 24px; }
+      .hero-panel h2 { font-size: 24px; }
+      .impact-panel { min-height: 145px; }
+      .impact-number { font-size: 34px; }
+      .market-layout { grid-template-columns: 1fr; }
+      .side-column { display: none; }
+      .section-head h2 { font-size: 19px; }
+      .listing-grid, .my-listings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .photo-wrap { height: 140px; }
+      .card-body { padding: 10px; }
+      .card-title { font-size: 12px; }
+      .sort-select { min-width: 115px; }
+    }
+    @media (max-width: 430px) {
+      .topbar { padding: 0 11px; }
+      .nav { flex: 1; min-width: 0; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+      .nav::-webkit-scrollbar { display: none; }
+      .nav-link { flex: 0 0 auto; padding: 7px 5px; font-size: 9px; white-space: nowrap; }
+      .brand { gap: 6px; font-size: 18px; }
+      .brand-mark { width: 28px; height: 28px; }
+      .profile { gap: 5px; }
+      .avatar { width: 30px; height: 30px; }
+      .shell { padding-right: 12px; padding-left: 12px; }
+      .welcome { gap: 8px; }
+      .welcome h1 { max-width: 210px; font-size: 23px; }
+      .welcome-copy { font-size: 12px; }
+      .welcome .button { padding: 0 9px; font-size: 10px; }
+      .welcome .button svg { width: 14px; }
+      .search-row { gap: 6px; }
+      .sort-select { min-width: 100px; padding-left: 8px; font-size: 10px; }
+      .filters { gap: 5px; }
+      .filter-chip { padding: 0 9px; font-size: 10px; }
+      .listing-grid, .my-listings-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .photo-wrap { height: 112px; }
+      .type-badge { left: 6px; top: 6px; padding: 4px 6px; font-size: 8px; }
+      .seller { font-size: 9px; }
+      .card-link { font-size: 9px; }
+      .card-price { font-size: 10px; }
+      .card-condition { font-size: 9px; }
+      .impact-page { grid-template-columns: 1fr; }
+      .impact-explainer { grid-column: auto; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: auto; }
+      .footer { flex-direction: column; gap: 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="auth-page" id="auth-view">
+    <section class="auth-story">
+      <div class="auth-brand"><span class="auth-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5c-2.2-1.8-5-2.6-8-2.1V5.3c3-.5 5.8.3 8 2.1m0 13.1c2.2-1.8 5-2.6 8-2.1V5.3c-3-.5-5.8.3-8 2.1m0 13.1V7.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.2 6.5c.4-2.2 2.3-3.7 4.8-3.7-.1 2.5-1.6 4.4-3.8 4.8m-.7-1.1 3.3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>St. Cecilia's College · Cebu</span></div>
+      <div class="auth-story-copy"><p class="eyebrow">Campus Resource Exchange</p><h1>Good resources deserve another life.</h1><p>Share, donate, reuse, or swap useful campus items with fellow students, faculty, and staff.</p><div class="auth-modes" aria-label="Ways to share"><span class="auth-mode">Free</span><span class="auth-mode">Donate</span><span class="auth-mode">Reuse</span><span class="auth-mode">Swap</span></div></div>
+      <p class="auth-story-foot">A campus initiative for sharing more and wasting less.</p>
+    </section>
+    <section class="auth-panel">
+      <div class="auth-card">
+        <p class="eyebrow">Campus community access</p>
+        <div class="auth-tabs" role="tablist" aria-label="Account access">
+          <button class="auth-tab" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-form">Sign in</button>
+          <button class="auth-tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-form">Register</button>
+        </div>
+        <form class="auth-form" id="login-form">
+          <div><h2 id="auth-heading">Welcome back</h2><p class="auth-subtitle">Sign in to continue to the campus resource exchange.</p></div>
+          <div class="form-field"><label for="login-email">Email address</label><input class="form-control" id="login-email" name="email" type="email" autocomplete="username" required placeholder="name@example.com"></div>
+          <div class="form-field"><label for="login-password">Password</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Enter your password"></div>
+          <button class="button button-primary" type="submit">Sign in</button>
+        </form>
+        <form class="auth-form auth-hidden" id="register-form">
+          <div><h2>Create your account</h2><p class="auth-subtitle">Join the St. Cecilia's campus sharing community.</p></div>
+          <div class="form-field"><label for="register-name">Full name</label><input class="form-control" id="register-name" name="name" autocomplete="name" required maxlength="70" placeholder="Your name"></div>
+          <div class="form-field"><label for="register-role">Campus role</label><select class="form-control" id="register-role" name="role" required><option>Student</option><option>Faculty</option></select></div>
+          <div class="form-field"><label for="register-email">Email address</label><input class="form-control" id="register-email" name="email" type="email" autocomplete="email" required placeholder="Use your campus email if available"></div>
+          <div class="form-field"><label for="register-password">Create password</label><input class="form-control" id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></div>
+          <div class="form-field"><label for="register-confirm">Confirm password</label><input class="form-control" id="register-confirm" name="confirm" type="password" autocomplete="new-password" minlength="8" required placeholder="Re-enter your password"></div>
+          <button class="button button-primary" type="submit">Create account</button>
+        </form>
+        <p class="auth-notice" id="auth-notice">Prototype access only: this page does not verify campus identity or store accounts. Connect a secure school authentication service before using real accounts.</p>
+        <p id="auth-feedback" role="status" aria-live="polite" hidden></p>
+        <div class="auth-divider">or</div>
+        <button class="auth-guest" id="guest-preview" type="button">Continue to guest preview</button>
+        <div class="auth-demo-roles"><button class="button button-secondary" type="button" data-demo-role="Staff">Staff preview</button><button class="button button-secondary" type="button" data-demo-role="Administrator">Admin preview</button></div>
+        <p class="auth-role-note">Staff/admin access is assigned by the school. These buttons open demo roles only.</p>
+      </div>
+    </section>
+  </main>
+  <div id="app-shell" hidden>
+  <header class="topbar">
+    <a class="brand" href="#market" aria-label="Loop home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5c-2.2-1.8-5-2.6-8-2.1V5.3c3-.5 5.8.3 8 2.1m0 13.1c2.2-1.8 5-2.6 8-2.1V5.3c-3-.5-5.8.3-8 2.1m0 13.1V7.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.2 6.5c.4-2.2 2.3-3.7 4.8-3.7-.1 2.5-1.6 4.4-3.8 4.8m-.7-1.1 3.3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      scc<span style="font-size:12px; margin-left:2px; align-self:center; font-weight:600">resource loop</span>
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="nav-link active" data-view="market">Resources</button>
+      <button class="nav-link" data-view="my-listings">My shares</button>
+      <button class="nav-link" data-view="impact">Impact</button>
+      <button class="nav-link" id="operations-nav" data-view="operations" hidden>Operations</button>
+    </nav>
+    <div class="profile"><span class="avatar" id="profile-avatar" aria-hidden="true">SC</span><span class="profile-name" id="profile-name">Campus community</span><span class="profile-role" id="profile-role"></span><button class="icon-button" id="sign-out" type="button" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  </header>
+
+  <main class="shell">
+    <div class="welcome">
+      <div><p class="eyebrow">St. Cecilia's College · Cebu</p><h1>Campus Resource Exchange</h1><p class="welcome-copy">Pass it on, give it away, or find something useful.</p></div>
+      <button class="button button-primary" id="open-post"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Share a resource</button>
+    </div>
+
+    <section class="view active" id="view-market" aria-label="Campus resources">
+      <div class="overview">
+        <div class="hero-panel"><div class="hero-content"><p class="eyebrow">Waste less. Share more.</p><h2>Useful things belong in the hands of the next student.</h2><p>Pass on reviewers, yellow pads, PE gear, payong, and other everyday student essentials.</p><button class="button" id="browse-button">Find a resource <span aria-hidden="true">&#8594;</span></button></div></div>
+        <div class="impact-panel"><div><div class="impact-heading"><h2>Campus impact</h2><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 4.5c-8.1 0-14.2 3.2-14.2 9.3 0 2.5 1.8 4.4 4.2 4.4 6.2 0 10-6 10-13.7Z" stroke="currentColor" stroke-width="1.7"/><path d="M4 21c2.4-5.1 6.6-8.5 12-11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div><div class="impact-number" id="impact-kg">0 kg</div><p class="impact-label">estimated materials recirculated</p></div><div class="impact-foot"><span class="impact-dot"></span><span><strong id="impact-count">0 items</strong> given another life</span></div></div>
+      </div>
+      <div class="market-layout">
+        <div>
+          <div class="section-head"><div><h2>Resources for our campus</h2><p>Find something useful or pass along what you no longer need.</p></div></div>
+          <div class="search-row"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input class="search-input" id="search" type="search" placeholder="Search reviewers, yellow pads, payong..." aria-label="Search campus resources"></label></div>
+          <div class="filters" id="type-filters" aria-label="Filter by sharing option"><button class="filter-chip active" data-type="All">All resources</button><button class="filter-chip" data-type="Free">Free</button><button class="filter-chip" data-type="Donate">Donate</button><button class="filter-chip" data-type="Reuse">Reuse</button><button class="filter-chip" data-type="Swap">Swap</button></div>
+          <p class="result-line"><span id="result-count">Showing listings</span><span>Meet up on campus</span></p>
+          <div class="listing-grid" id="listing-grid"></div>
+        </div>
+        <aside class="side-column">
+          <div class="side-block"><h3>Browse by category</h3><div class="category-list" id="category-list"></div></div>
+          <div class="campus-note"><h3><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 3.5 7v.5h17V7L12 3ZM5 9v8m4-8v8m6-8v8m4-8v8M3.5 19h17M4 21h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Campus community</h3><p>Connect with fellow students and staff to arrange a safe, in-person handoff on campus. No payments are handled by this system.</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-my-listings" aria-label="My listings">
+      <div class="section-head"><div><p class="eyebrow">Your corner of campus</p><h2>My shares</h2><p>Resources you've offered to the community.</p></div><button class="button button-primary" id="open-post-2"><span aria-hidden="true">+</span> Share a resource</button></div>
+      <div class="page-section"><div class="listing-grid my-listings-grid" id="my-listings-grid"></div></div>
+    </section>
+
+    <section class="view" id="view-impact" aria-label="Community impact">
+      <div class="section-head"><div><p class="eyebrow">Small actions, less waste</p><h2>Our campus, in the loop.</h2><p>A running estimate based on resources shared through this browser.</p></div></div>
+      <div class="page-section impact-page"><div class="impact-stat"><h3>Materials recirculated</h3><strong id="impact-total-large">0 kg</strong><p>Illustrative estimate from sample and browser-local shares.</p></div><div class="impact-stat"><h3>Items kept in use</h3><strong id="impact-items-large">0</strong><p>Resources offered a second life by the campus community.</p></div><div class="impact-explainer"><h3>Every item has another chapter.</h3><p>When campus materials are passed on instead of discarded, useful resources stay in circulation. This estimate uses a simple average by item category; it is a directional snapshot, not a measured waste audit.</p></div></div>
+    </section>
+    <section class="view" id="view-operations" aria-label="Operations">
+      <div class="section-head"><div><p class="eyebrow">Campus team tools</p><h2 id="operations-title">Operations</h2><p id="operations-subtitle">Manage campus exchange activity.</p></div></div>
+      <div class="page-section" id="operations-content"></div>
+    </section>
+    <footer class="footer"><span>Campus Resource Exchange and Waste Reduction System</span><span>St. Cecilia's College – Cebu, Inc.</span><span>Resource handoffs are arranged by campus members.</span></footer>
+  </main>
+
+  <div class="modal-backdrop" id="post-modal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="post-title">
+      <div class="modal-head"><h2 id="post-title">Share a resource</h2><button class="icon-button close-modal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+      <form class="modal-content" id="post-form">
+        <div class="form-grid">
+          <div class="form-field full"><label for="item-title">Resource name</label><input class="form-control" id="item-title" name="title" required maxlength="70" placeholder="e.g. Intro to Psychology textbook"></div>
+          <div class="form-field"><label for="item-category">Category</label><select class="form-control" id="item-category" name="category" required><option>Textbooks &amp; reviewers</option><option>School supplies</option><option>Uniforms &amp; PE gear</option><option>Electronics</option><option>Bags &amp; daily essentials</option><option>Other</option></select></div>
+          <div class="form-field"><label for="item-type">How would you like to share it?</label><select class="form-control" id="item-type" name="type" required><option>Free</option><option>Donate</option><option>Reuse</option><option>Swap</option></select></div>
+          <div class="form-field"><label for="item-condition">Condition</label><select class="form-control" id="item-condition" name="condition"><option>Like new</option><option>Good</option><option>Fair</option></select></div>
+          <div class="form-field"><label for="member-name">Your name</label><input class="form-control" id="member-name" name="member" required maxlength="40" placeholder="First name"></div>
+          <div class="form-field"><label for="seller-email">Contact email</label><input class="form-control" id="seller-email" name="email" type="email" required placeholder="you@example.com"></div>
+          <div class="form-field full"><label for="item-description">Description</label><textarea class="form-control" id="item-description" name="description" maxlength="400" placeholder="Describe its condition, how it can be reused, or what you would like to swap it for."></textarea></div>
+          <div class="form-field full"><label for="item-image">Photo URL <span style="font-weight:400;color:#879188">(optional)</span></label><input class="form-control" id="item-image" name="image" type="url" placeholder="https://..."><p class="form-help">Use a publicly accessible image link.</p></div>
+        </div>
+        <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit">Publish listing</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="detail-modal" role="presentation"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detail-title"><div class="modal-head"><h2>Listing details</h2><button class="icon-button close-modal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="modal-content" id="detail-content"></div></section></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    const starterListings = [
+      { id: "seed-1", title: "College Algebra reviewer set", category: "Textbooks & reviewers", type: "Reuse", condition: "Good", member: "Mika R.", email: "mika@example.com", description: "Reviewer notes and practice exercises from last semester. Useful for incoming students.", image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=80", weight: 1.1, own: false },
+      { id: "seed-2", title: "Scientific calculator", category: "Electronics", type: "Swap", condition: "Good", member: "Jules T.", email: "jules@example.com", description: "Solar-powered scientific calculator. Open to swapping for a working USB flash drive.", image: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&w=900&q=80", weight: .3, own: false },
+      { id: "seed-3", title: "Yellow pad, intermediate pad & ballpens", category: "School supplies", type: "Free", condition: "Good", member: "Ari L.", email: "ari@example.com", description: "Partly used pads with plenty of clean sheets left, plus a few working pens.", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80", weight: .5, own: false },
+      { id: "seed-4", title: "PE shirt and jogging pants, size M", category: "Uniforms & PE gear", type: "Donate", condition: "Good", member: "Nico P.", email: "nico@example.com", description: "Clean PE set in good condition. Please check your campus uniform guidelines before arranging a handoff.", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80", weight: .8, own: false },
+      { id: "seed-5", title: "Foldable payong", category: "Bags & daily essentials", type: "Reuse", condition: "Good", member: "Bea C.", email: "bea@example.com", description: "Compact umbrella, still opens and closes properly. Handy for sudden Cebu rain.", image: "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=900&q=80", weight: .7, own: false },
+      { id: "seed-6", title: "Baunan set with utensils", category: "Bags & daily essentials", type: "Free", condition: "Like new", member: "Sam D.", email: "sam@example.com", description: "Clean reusable food container and utensils for bringing baon to campus.", image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=80", weight: .4, own: false },
+      { id: "seed-7", title: "Nursing reviewer packet", category: "Textbooks & reviewers", type: "Donate", condition: "Good", member: "Kai M.", email: "kai@example.com", description: "A set of review notes and practice questions for another nursing student.", image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=900&q=80", weight: .6, own: false, approved: false }
+    ];
+    const categories = ["All categories", "Textbooks & reviewers", "School supplies", "Uniforms & PE gear", "Electronics", "Bags & daily essentials", "Other"];
+    const demoAccounts = [
+      { id: "account-admin", name: "Campus Administrator", email: "admin@demo.local", role: "Administrator", active: true },
+      { id: "account-staff", name: "Resource Desk Staff", email: "staff@demo.local", role: "Staff", active: true },
+      { id: "account-student", name: "Student Member", email: "student@demo.local", role: "Student", active: true }
+    ];
+    const fallbackImage = "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=900&q=80";
+    const supabaseConfig = window.CREWRS_SUPABASE_CONFIG || {};
+    const supabaseEnabled = Boolean(supabaseConfig.url && supabaseConfig.anonKey);
+    const supabaseClient = window.supabase?.createClient && supabaseConfig.url && supabaseConfig.anonKey
+      ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
+      : null;
+    let currentAccount = null;
+    let listings = supabaseClient ? [] : loadListings();
+    let selectedCategory = "All categories";
+    let selectedType = "All";
+    let currentView = "market";
+    let toastTimeout;
+
+    function loadListings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("loop-listings") || "null");
+        if (Array.isArray(saved)) return [...starterListings, ...saved.map(item => {
+          const { seller, price, ...savedItem } = item;
+          const legacyTypes = { "For sale": "Reuse", "For exchange": "Swap" };
+          const legacyCategories = { Books: "Textbooks & reviewers", "Home & lifestyle": "Bags & daily essentials", Clothing: "Uniforms & PE gear" };
+          const type = legacyTypes[savedItem.type] || savedItem.type;
+          return { ...savedItem, category: legacyCategories[savedItem.category] || savedItem.category, member: savedItem.member || seller || "Campus member", type: ["Free", "Donate", "Reuse", "Swap"].includes(type) ? type : "Reuse" };
+        })];
+      } catch (error) { console.warn("Could not load saved listings.", error); }
+      return [...starterListings];
+    }
+    function showAuthFeedback(message, isError = false) {
+      const feedback = document.getElementById("auth-feedback");
+      feedback.textContent = message;
+      feedback.dataset.error = String(isError);
+      feedback.hidden = !message;
+    }
+    function formatResource(row) {
+      return {
+        id: row.id, title: row.title, category: row.category, type: row.sharing_type,
+        condition: row.condition, member: row.owner_name, email: "",
+        description: row.description || "", image: row.image_url || fallbackImage,
+        weight: Number(row.weight_kg || .4), own: row.owner_id === currentAccount?.id,
+        approved: row.status === "approved", rejected: row.status === "rejected"
+      };
+    }
+    async function loadSupabaseResources() {
+      const { data, error } = await supabaseClient.from("resources")
+        .select("id, owner_id, owner_name, title, category, sharing_type, condition, description, image_url, weight_kg, status, created_at")
+        .order("created_at", { ascending: false });
+      if (error) {
+        showToast(`Could not load campus resources: ${error.message}`);
+        return;
+      }
+      listings = data.map(formatResource);
+      renderListings();
+    }
+    async function loadSupabaseAccount(user) {
+      const { data, error } = await supabaseClient.from("profiles")
+        .select("id, full_name, email, role, is_active")
+        .eq("id", user.id)
+        .single();
+      if (error || !data || !data.is_active) {
+        await supabaseClient.auth.signOut();
+        showAuthFeedback(error?.message || "This campus account is inactive.", true);
+        return false;
+      }
+      currentAccount = { id: data.id, name: data.full_name, email: data.email, role: data.role };
+      enterApp(currentAccount);
+      await loadSupabaseResources();
+      return true;
+    }
+    function escapeHtml(value = "") {
+      return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+    }
+    function visibleListings(ownOnly = false) {
+      const query = document.getElementById("search").value.trim().toLowerCase();
+      let result = listings.filter(item => !item.claimed && !item.rejected && (ownOnly ? item.own : item.approved !== false));
+      if (selectedCategory !== "All categories") result = result.filter(item => item.category === selectedCategory);
+      if (selectedType !== "All") result = result.filter(item => item.type === selectedType);
+      if (query) result = result.filter(item => `${item.title} ${item.category} ${item.description} ${item.member}`.toLowerCase().includes(query));
+      return result;
+    }
+    function cardMarkup(item) {
+      const initials = item.member.split(/\s+/).map(part => part[0]).slice(0, 2).join("").toUpperCase();
+      const reviewStatus = item.approved === false ? "Pending staff review · " : "";
+      return `<article class="listing-card"><div class="photo-wrap"><img src="${escapeHtml(item.image || fallbackImage)}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage}'"><span class="type-badge">${escapeHtml(item.type)}</span></div><div class="card-body"><p class="card-category">${escapeHtml(item.category)}</p><div class="card-title-row"><h3 class="card-title">${escapeHtml(item.title)}</h3></div><p class="card-condition">${reviewStatus}${escapeHtml(item.condition)} condition</p><div class="card-footer"><span class="seller"><span class="seller-avatar">${escapeHtml(initials)}</span>${escapeHtml(item.member)}</span><button class="card-link" data-detail="${escapeHtml(item.id)}">View details <span aria-hidden="true">&#8594;</span></button></div></div></article>`;
+    }
+    function renderListings() {
+      const results = visibleListings();
+      document.getElementById("listing-grid").innerHTML = results.length ? results.map(cardMarkup).join("") : `<div class="empty-state"><strong>No listings found</strong><p>Try another search or category, or be the first to share something.</p></div>`;
+      document.getElementById("result-count").textContent = `Showing ${results.length} ${results.length === 1 ? "listing" : "listings"}`;
+      const own = visibleListings(true);
+      document.getElementById("my-listings-grid").innerHTML = own.length ? own.map(cardMarkup).join("") : `<div class="empty-state"><strong>Your listings will show up here</strong><p>Share a useful item with the campus community to get started.</p></div>`;
+      renderCategories();
+      updateImpact();
+    }
+    function renderCategories() {
+      const available = listings.filter(item => !item.claimed && !item.rejected && item.approved !== false);
+      document.getElementById("category-list").innerHTML = categories.map(category => {
+        const count = category === "All categories" ? available.length : available.filter(item => item.category === category).length;
+        const isActive = category === selectedCategory;
+        return `<button class="category-button${isActive ? " active" : ""}" data-category="${escapeHtml(category)}"${count === 0 && category !== "All categories" ? " disabled" : ""}><span>${escapeHtml(category)}</span><span class="category-count">${count}</span></button>`;
+      }).join("");
+    }
+    function updateImpact() {
+      const activeListings = listings.filter(item => !item.claimed && !item.rejected && item.approved !== false);
+      const kilos = activeListings.reduce((sum, item) => sum + Number(item.weight || .4), 0);
+      const displayKilos = kilos.toLocaleString("en", { maximumFractionDigits: 1 });
+      document.getElementById("impact-kg").textContent = `${displayKilos} kg`;
+      document.getElementById("impact-count").textContent = `${activeListings.length} ${activeListings.length === 1 ? "item" : "items"}`;
+      document.getElementById("impact-total-large").textContent = `${displayKilos} kg`;
+      document.getElementById("impact-items-large").textContent = activeListings.length;
+    }
+    async function renderOperations() {
+      const account = currentAccount || (!supabaseEnabled ? JSON.parse(sessionStorage.getItem("crewrs-session") || "null") : null);
+      const isAdmin = account?.role === "Administrator";
+      const isStaff = account?.role === "Staff";
+      const nav = document.getElementById("operations-nav");
+      nav.hidden = !isAdmin && !isStaff;
+      if (!isAdmin && !isStaff) return;
+      const content = document.getElementById("operations-content");
+      if (isAdmin) {
+        document.getElementById("operations-title").textContent = "Account administration";
+        document.getElementById("operations-subtitle").textContent = supabaseClient ? "Manage verified campus accounts and access." : "Review demo campus accounts and access status.";
+        let accounts = demoAccounts;
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.from("profiles").select("id, full_name, email, role, is_active").order("created_at", { ascending: false });
+          if (error) {
+            content.innerHTML = `<div class="empty-state"><strong>Could not load accounts</strong><p>${escapeHtml(error.message)}</p></div>`;
+            return;
+          }
+          accounts = data.map(profile => ({ id: profile.id, name: profile.full_name, email: profile.email, role: profile.role, active: profile.is_active }));
+        }
+        content.innerHTML = `<div class="operations-header"><div><h3>Campus account directory</h3><p>${supabaseClient ? "Registered accounts from Supabase." : "Sample accounts for the capstone demo. Changes reset when the page reloads."}</p></div><span class="role-label">${accounts.length} ${supabaseClient ? "accounts" : "demo accounts"}</span></div><div class="operations-list">${accounts.map(entry => `<div class="operations-row"><div><h4>${escapeHtml(entry.name)}</h4><p>${escapeHtml(entry.email)}</p></div><div class="operations-actions"><select class="form-control" aria-label="Role for ${escapeHtml(entry.name)}" data-account-role-select><option value="Student"${entry.role === "Student" ? " selected" : ""}>Student</option><option value="Faculty"${entry.role === "Faculty" ? " selected" : ""}>Faculty</option><option value="Staff"${entry.role === "Staff" ? " selected" : ""}>Staff</option><option value="Administrator"${entry.role === "Administrator" ? " selected" : ""}>Administrator</option></select><span class="status-label">${entry.active ? "Active" : "Inactive"}</span><button class="button button-secondary" type="button" data-account-role-save="${escapeHtml(entry.id)}" data-account-active="${entry.active}">Save role</button><button class="button button-secondary" type="button" data-account-toggle="${escapeHtml(entry.id)}" data-account-role="${escapeHtml(entry.role)}" data-account-active="${entry.active}">${entry.active ? "Deactivate" : "Activate"}</button></div></div>`).join("")}</div>`;
+        return;
+      }
+      document.getElementById("operations-title").textContent = "Staff resource review";
+      document.getElementById("operations-subtitle").textContent = "Check new shares before they appear in the campus resources feed.";
+      const pending = listings.filter(item => item.approved === false && !item.rejected);
+      content.innerHTML = `<div class="pending-note">New member submissions stay out of the public resources feed until staff approves them.</div><div class="operations-header"><div><h3>Awaiting review</h3><p>${pending.length} ${pending.length === 1 ? "resource" : "resources"} need attention.</p></div></div><div class="operations-list">${pending.length ? pending.map(item => `<div class="operations-row"><div><h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.category)} · ${escapeHtml(item.type)} · Shared by ${escapeHtml(item.member)}<br>${escapeHtml(item.description || "No description provided.")}</p></div><div class="operations-actions"><button class="button button-primary" type="button" data-review="approve" data-item-id="${escapeHtml(item.id)}">Approve</button><button class="button button-secondary" type="button" data-review="remove" data-item-id="${escapeHtml(item.id)}">Remove</button></div></div>`).join("") : `<div class="empty-state"><strong>Review queue is clear</strong><p>New resource shares will appear here for staff review.</p></div>`}</div>`;
+    }
+    function persistUserListings() {
+      if (supabaseEnabled) return;
+      try { localStorage.setItem("loop-listings", JSON.stringify(listings.filter(item => item.own))); }
+      catch (error) { showToast("Couldn't save this listing in your browser."); }
+    }
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove("show"), 2800);
+    }
+    function setView(view) {
+      const account = currentAccount || (!supabaseEnabled ? JSON.parse(sessionStorage.getItem("crewrs-session") || "null") : null);
+      if (view === "operations" && !["Administrator", "Staff"].includes(account?.role)) return;
+      currentView = view;
+      document.querySelectorAll(".view").forEach(section => section.classList.toggle("active", section.id === `view-${view}`));
+      document.querySelectorAll(".nav-link").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+      if (view === "operations") renderOperations();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+      const focusTarget = modal.querySelector("input, button, select");
+      if (focusTarget) setTimeout(() => focusTarget.focus(), 40);
+    }
+    function closeModals() {
+      document.querySelectorAll(".modal-backdrop.open").forEach(modal => modal.classList.remove("open"));
+      document.body.style.overflow = "";
+    }
+    function showDetails(id) {
+      const item = listings.find(listing => listing.id === id);
+      if (!item) return;
+      const content = document.getElementById("detail-content");
+      const contactSubject = encodeURIComponent(`About your campus resource: ${item.title}`);
+      const contactBody = encodeURIComponent(`Hi ${item.member}, I saw your resource on the campus exchange and would like to ask about "${item.title}". Is it still available?`);
+      const contactAction = supabaseClient
+        ? `<button class="button button-primary" type="button" data-contact-member="${escapeHtml(item.id)}" data-contact-subject="${contactSubject}" data-contact-body="${contactBody}">Contact member</button>`
+        : `<a class="button button-primary" href="mailto:${encodeURIComponent(item.email)}?subject=${contactSubject}&body=${contactBody}">Contact member</a>`;
+      content.innerHTML = `<img class="detail-image" src="${escapeHtml(item.image || fallbackImage)}" alt="${escapeHtml(item.title)}" onerror="this.onerror=null;this.src='${fallbackImage}'"><div class="detail-meta"><div><p class="card-category">${escapeHtml(item.category)} · ${escapeHtml(item.type)}</p><h3 class="detail-title" id="detail-title">${escapeHtml(item.title)}</h3></div></div><p class="detail-description">${escapeHtml(item.description || "No description provided.")}</p><div class="detail-info"><div><strong>Condition:</strong> ${escapeHtml(item.condition)}</div><div><strong>Shared by:</strong> ${escapeHtml(item.member)}</div><div><strong>Handoff:</strong> Arrange a safe, in-person meet-up on campus</div></div><div class="modal-actions"><button class="button button-secondary close-modal" type="button">Close</button>${contactAction}</div>`;
+      openModal("detail-modal");
+    }
+
+    document.querySelectorAll(".nav-link").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+    document.getElementById("operations-content").addEventListener("click", async event => {
+      const reviewButton = event.target.closest("[data-review]");
+      if (reviewButton) {
+        const item = listings.find(listing => listing.id === reviewButton.dataset.itemId);
+        if (!item) return;
+        const isApproval = reviewButton.dataset.review === "approve";
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from("resources").update({
+            status: isApproval ? "approved" : "rejected",
+            reviewed_by: currentAccount.id,
+            reviewed_at: new Date().toISOString()
+          }).eq("id", item.id);
+          if (error) {
+            showToast(`Could not review resource: ${error.message}`);
+            return;
+          }
+          showToast(isApproval ? "Resource approved and added to the campus feed." : "Resource removed from the campus feed.");
+          await loadSupabaseResources();
+        } else {
+          if (isApproval) item.approved = true;
+          else item.rejected = true;
+          persistUserListings();
+          renderListings();
+          showToast(isApproval ? "Resource approved and added to the campus feed." : "Resource removed from the review queue.");
+        }
+        return;
+      }
+      const accountButton = event.target.closest("[data-account-toggle]");
+      if (accountButton) {
+        if (supabaseClient) {
+          const { error } = await supabaseClient.rpc("set_account_access", {
+            target_user_id: accountButton.dataset.accountToggle,
+            new_role: accountButton.dataset.accountRole,
+            new_is_active: accountButton.dataset.accountActive !== "true"
+          });
+          if (error) {
+            showToast(`Could not update account: ${error.message}`);
+            return;
+          }
+          await renderOperations();
+          return;
+        }
+        const account = demoAccounts.find(entry => entry.id === accountButton.dataset.accountToggle);
+        if (!account) return;
+        account.active = !account.active;
+        renderOperations();
+        return;
+      }
+      const roleButton = event.target.closest("[data-account-role-save]");
+      if (roleButton) {
+        const row = roleButton.closest(".operations-row");
+        const role = row.querySelector("[data-account-role-select]").value;
+        const isActive = roleButton.dataset.accountActive === "true";
+        if (supabaseClient) {
+          const { error } = await supabaseClient.rpc("set_account_access", {
+            target_user_id: roleButton.dataset.accountRoleSave,
+            new_role: role,
+            new_is_active: isActive
+          });
+          if (error) {
+            showToast(`Could not update role: ${error.message}`);
+            return;
+          }
+          await renderOperations();
+          showToast("Campus account role updated.");
+          return;
+        }
+        const account = demoAccounts.find(entry => entry.id === roleButton.dataset.accountRoleSave);
+        if (!account) return;
+        account.role = role;
+        renderOperations();
+        showToast("Demo account role updated.");
+      }
+    });
+    document.getElementById("browse-button").addEventListener("click", () => document.getElementById("search").focus());
+    document.getElementById("open-post").addEventListener("click", () => openModal("post-modal"));
+    document.getElementById("open-post-2").addEventListener("click", () => openModal("post-modal"));
+    document.getElementById("search").addEventListener("input", renderListings);
+    document.getElementById("type-filters").addEventListener("click", event => {
+      const button = event.target.closest("[data-type]");
+      if (!button) return;
+      selectedType = button.dataset.type;
+      document.querySelectorAll(".filter-chip").forEach(chip => chip.classList.toggle("active", chip === button));
+      renderListings();
+    });
+    document.getElementById("category-list").addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      selectedCategory = button.dataset.category;
+      renderListings();
+    });
+    document.addEventListener("click", async event => {
+      const detailButton = event.target.closest("[data-detail]");
+      if (detailButton) showDetails(detailButton.dataset.detail);
+      const contactButton = event.target.closest("[data-contact-member]");
+      if (contactButton && supabaseClient) {
+        const { data, error } = await supabaseClient.rpc("get_resource_contact", { target_resource_id: contactButton.dataset.contactMember });
+        if (error || !data) {
+          showToast(error?.message || "Contact information is unavailable.");
+          return;
+        }
+        window.location.href = `mailto:${encodeURIComponent(data)}?subject=${contactButton.dataset.contactSubject}&body=${contactButton.dataset.contactBody}`;
+      }
+      if (event.target.closest(".close-modal")) closeModals();
+      if (event.target.classList.contains("modal-backdrop")) closeModals();
+    });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeModals(); });
+    document.getElementById("post-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const type = form.get("type");
+      const categoryWeights = { "Textbooks & reviewers": 1, "School supplies": .35, "Uniforms & PE gear": .8, Electronics: .5, "Bags & daily essentials": .4, Other: .4 };
+      const title = String(form.get("title")).trim();
+      if (!title) return;
+      const member = String(form.get("member")).trim();
+      const email = String(form.get("email")).trim();
+      const description = String(form.get("description")).trim();
+      const image = String(form.get("image")).trim() || fallbackImage;
+      const weight = categoryWeights[form.get("category")] || .4;
+      if (supabaseClient) {
+        const { error } = await supabaseClient.from("resources").insert({
+          owner_id: currentAccount.id, owner_name: member, contact_email: email,
+          title, category: form.get("category"), sharing_type: type,
+          condition: form.get("condition"), description, image_url: image,
+          weight_kg: weight, status: "pending"
+        });
+        if (error) {
+          showToast(`Could not share resource: ${error.message}`);
+          return;
+        }
+        await loadSupabaseResources();
+      } else {
+        listings.unshift({
+          id: `user-${Date.now()}`, title, category: form.get("category"), type,
+          condition: form.get("condition"), member, email, description, image,
+          weight, own: true, approved: false
+        });
+        persistUserListings();
+        renderListings();
+      }
+      event.currentTarget.reset();
+      closeModals();
+      setView("my-listings");
+      showToast(supabaseClient ? "Resource submitted for staff review." : "Your listing is saved in this browser.");
+    });
+    document.getElementById("search").addEventListener("keydown", event => { if (event.key === "Escape") { event.currentTarget.value = ""; renderListings(); } });
+    function setAuthMode(mode) {
+      const isRegister = mode === "register";
+      document.getElementById("login-form").classList.toggle("auth-hidden", isRegister);
+      document.getElementById("register-form").classList.toggle("auth-hidden", !isRegister);
+      document.getElementById("login-tab").setAttribute("aria-selected", String(!isRegister));
+      document.getElementById("register-tab").setAttribute("aria-selected", String(isRegister));
+      document.getElementById("auth-heading").textContent = isRegister ? "Create your account" : "Welcome back";
+    }
+    function enterApp(account) {
+      currentAccount = account;
+      if (!supabaseEnabled) sessionStorage.setItem("crewrs-session", JSON.stringify(account));
+      document.getElementById("auth-view").hidden = true;
+      document.getElementById("app-shell").hidden = false;
+      document.getElementById("profile-name").textContent = account.name;
+      document.getElementById("profile-avatar").textContent = account.name.split(/\s+/).map(part => part[0]).slice(0, 2).join("").toUpperCase();
+      document.getElementById("profile-role").textContent = account.role;
+      const contactEmail = document.getElementById("seller-email");
+      contactEmail.value = account.email || "";
+      contactEmail.readOnly = Boolean(supabaseClient);
+      setView("market");
+      renderOperations();
+    }
+    document.getElementById("login-tab").addEventListener("click", () => setAuthMode("login"));
+    document.getElementById("register-tab").addEventListener("click", () => setAuthMode("register"));
+    document.getElementById("login-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const email = String(form.get("email")).trim();
+      showAuthFeedback("");
+      if (supabaseEnabled) {
+        if (!supabaseClient) {
+          showAuthFeedback("Supabase is configured but its client library did not load. Check your internet connection and reload.", true);
+          return;
+        }
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: String(form.get("password")) });
+        if (error) {
+          showAuthFeedback(error.message, true);
+          return;
+        }
+        await loadSupabaseAccount(data.user);
+        return;
+      }
+      const name = email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, character => character.toUpperCase());
+      enterApp({ name: name || "Campus member", email, role: "Student" });
+    });
+    document.getElementById("register-confirm").addEventListener("input", event => event.currentTarget.setCustomValidity(""));
+    document.getElementById("register-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const password = String(form.get("password"));
+      const confirmation = document.getElementById("register-confirm");
+      showAuthFeedback("");
+      if (password !== String(form.get("confirm"))) {
+        confirmation.setCustomValidity("Passwords do not match.");
+        confirmation.reportValidity();
+        return;
+      }
+      if (supabaseEnabled) {
+        if (!supabaseClient) {
+          showAuthFeedback("Supabase is configured but its client library did not load. Check your internet connection and reload.", true);
+          return;
+        }
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: String(form.get("email")).trim(),
+          password,
+          options: { data: { full_name: String(form.get("name")).trim(), role: String(form.get("role")) } }
+        });
+        if (error) {
+          showAuthFeedback(error.message, true);
+          return;
+        }
+        if (!data.session) {
+          showAuthFeedback("Account created. Check your email to confirm it, then sign in.");
+          event.currentTarget.reset();
+          return;
+        }
+        await loadSupabaseAccount(data.user);
+        return;
+      }
+      enterApp({ name: String(form.get("name")).trim(), email: String(form.get("email")).trim(), role: String(form.get("role")) });
+    });
+    document.getElementById("guest-preview").addEventListener("click", () => {
+      if (!supabaseEnabled) enterApp({ name: "Campus Guest", email: "", role: "Guest" });
+    });
+    document.querySelectorAll("[data-demo-role]").forEach(button => button.addEventListener("click", () => {
+      if (supabaseEnabled) return;
+      const role = button.dataset.demoRole;
+      const account = role === "Administrator"
+        ? { name: "Campus Administrator", email: "admin@demo.local", role }
+        : { name: "Resource Desk Staff", email: "staff@demo.local", role };
+      enterApp(account);
+      setView("operations");
+    }));
+    document.getElementById("sign-out").addEventListener("click", async () => {
+      if (supabaseClient) await supabaseClient.auth.signOut();
+      currentAccount = null;
+      sessionStorage.removeItem("crewrs-session");
+      document.getElementById("app-shell").hidden = true;
+      document.getElementById("auth-view").hidden = false;
+      document.getElementById("login-form").reset();
+      document.getElementById("register-form").reset();
+      document.getElementById("seller-email").value = "";
+      document.getElementById("seller-email").readOnly = false;
+      showAuthFeedback("");
+      setAuthMode("login");
+    });
+    async function initializeApp() {
+      if (supabaseEnabled) {
+        sessionStorage.removeItem("crewrs-session");
+        document.getElementById("guest-preview").hidden = true;
+        document.querySelector(".auth-demo-roles").hidden = true;
+        document.querySelector(".auth-role-note").hidden = true;
+        document.getElementById("auth-notice").textContent = "Campus account access is verified by Supabase. Staff and Administrator roles must be assigned by a campus administrator.";
+        if (!supabaseClient) {
+          showAuthFeedback("Supabase is configured but its client library did not load. Check your internet connection and reload.", true);
+          return;
+        }
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error) showAuthFeedback(error.message, true);
+        else if (data.session) await loadSupabaseAccount(data.session.user);
+      } else {
+        try {
+          const savedSession = JSON.parse(sessionStorage.getItem("crewrs-session") || "null");
+          if (savedSession?.name) enterApp(savedSession);
+        } catch (error) { sessionStorage.removeItem("crewrs-session"); }
+      }
+      renderListings();
+    }
+    initializeApp();
+  </script>
+</body>
+</html>
